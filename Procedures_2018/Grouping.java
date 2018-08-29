@@ -174,6 +174,85 @@ public void groupDataModifiedGroupRank() {
 	}
 	catch(Exception e){ System.out.println(e);}  
 	}
+
+public void groupDataGroupRankBasedOnPaperType() {
+	try{  
+		
+		Class.forName("com.mysql.jdbc.Driver");  
+		Connection con=DriverManager.getConnection(  
+				"jdbc:mysql://gfprdsmysqlp001.cvbz72fzclwf.us-west-2.rds.amazonaws.com:3306/AetnaPrint_2018?noAccessToProcedureBodies=true","root","Rds@Ogilvy!");  
+
+		Statement stmt=con.createStatement();  
+		ResultSet rs=stmt.executeQuery("select * from report_by_id_group_2018 order by Publication");  
+		while(rs.next())  {
+			if(! rs.getString("NewspaperType").equals("TABLOID")) {
+				counter++;
+				if(prevPublication.equals(rs.getString("Publication")) && (prevMarket.equals(rs.getString("Market")))){
+					if(counter>=9){
+						groupcounter++;
+						groupname="Group"+groupcounter;
+						
+						counter=0;
+					}
+					else{
+						groupname="Group"+groupcounter;
+					}
+				}
+				
+				
+				if(!(prevPublication.equals(rs.getString("Publication")) && (prevMarket.equals(rs.getString("Market"))))){
+					groupcounter++;
+					groupname="Group"+groupcounter;
+					
+					counter=0;
+				}
+				prevPublication=rs.getString("Publication");
+				prevMarket=rs.getString("Market");
+				querybuilder.append("update report_by_id_group_2018 set grouprank='"+groupname+"' where pid="+rs.getInt(1)+" "
+						+ "and eid=" + rs.getInt(2)+" and date='"+rs.getString(3)+"' and geid='"+ rs.getString(4)+"';"  );
+				querybuilder.append("\n");
+			}
+			else {
+				counter++;
+				if(prevPublication.equals(rs.getString("Publication")) && (prevMarket.equals(rs.getString("Market")))){
+					if(counter>=2){
+						groupcounter++;
+						groupname="Group"+groupcounter;
+						
+						counter=0;
+					}
+					else{
+						groupname="Group"+groupcounter;
+					}
+				}
+				
+				
+				if(!(prevPublication.equals(rs.getString("Publication")) && (prevMarket.equals(rs.getString("Market"))))){
+					groupcounter++;
+					groupname="Group"+groupcounter;
+					
+					counter=0;
+				}
+				prevPublication=rs.getString("Publication");
+				prevMarket=rs.getString("Market");
+				querybuilder.append("update report_by_id_group_2018 set grouprank='"+groupname+"' where pid="+rs.getInt(1)+" "
+						+ "and eid=" + rs.getInt(2)+" and date='"+rs.getString(3)+"' and geid='"+ rs.getString(4)+"';"  );
+				querybuilder.append("\n");
+			}
+			  
+		}
+		java.sql.PreparedStatement executestaement= null;
+		Scanner queryscan= new Scanner(querybuilder.toString());
+		while (queryscan.hasNextLine() ){
+			executestaement= con.prepareStatement(queryscan.nextLine());
+			executestaement.executeUpdate();
+			executestaement= null;
+			}
+
+		queryscan.close();
+	}
+	catch(Exception e){ System.out.println(e);}  
+	}
 }
 
 

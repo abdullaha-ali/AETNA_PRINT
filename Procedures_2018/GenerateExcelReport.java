@@ -15,7 +15,8 @@ public class GenerateExcelReport {
 		//gr.groupDataFSI(); //Grouping logic for FSI
 		//gr.runLoadSnapByGroup(); / Calls loadSNAPbygroup_2017() which is already called earlier, hence ignore
 		//gr.groupData(); //Grouping logic for Publication 
-	 	gr.groupDataModifiedGroupRank(); //Modified grouping using Publication and Market
+	 	//gr.groupDataModifiedGroupRank(); //Modified grouping using Publication and Market
+	 	gr.groupDataGroupRankBasedOnPaperType(); //Modified grouping based on NewspaperType
 	 	//gr.groupDataUpdatedGroupRank(); //Modified grouping using Publication and Market and County
 		gr.createReportDynamicView(); //Grouping logic for Publication 
 	    //Snap_Output_By_Market s =new Snap_Output_By_Market();

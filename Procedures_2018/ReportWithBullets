@@ -1,0 +1,57 @@
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`%` 
+    SQL SECURITY DEFINER
+VIEW `ReportWithBullets` AS
+    SELECT 
+        '' AS `insertion_status`,
+        '' AS `row_id`,
+        '' AS `budget_source`,
+        `g`.`Region` AS `region`,
+        `g`.`Market` AS `market`,
+        `g`.`SubMarket` AS `submarket`,
+        `g`.`State` AS `state`,
+        `g`.`DominantCounty` AS `county`,
+        `g`.`Lead_Brand` AS `lead_brand`,
+        UCASE(`g`.`Publication`) AS `publication`,
+        `g`.`insertion_date` AS `insertion_date`,
+        '' AS `day_of_week`,
+        `g`.`Publication Days` AS `publication_days`,
+        `g`.`Material Deadline Range` AS `material_deadline_range`,
+        `g`.`material_due_date` AS `material_due_date`,
+        (CASE
+            WHEN (`g`.`Meeting Block 4` <> '') THEN 'FP4C'
+            ELSE 'JP4C'
+        END) AS `insertion_format`,
+        `g`.`NewspaperType` AS `paper_type`,
+        '' AS `insertion_cost`,
+        `g`.`Circulation` AS `circulation`,
+        `g`.`Total Event` AS `total_event`,
+        `g`.`Meeting Block 1` AS `meeting1`,
+        `g`.`Meeting Block 2` AS `meeting2`,
+        `g`.`Meeting Block 3` AS `meeting3`,
+        `g`.`Meeting Block 4` AS `meeting4`,
+        `g`.`Meeting Block 5` AS `meeting5`,
+        `g`.`Meeting Block 6` AS `meeting6`,
+        `g`.`Meeting Block 7` AS `meeting7`,
+        `g`.`Meeting Block 8` AS `meeting8`,
+        `g`.`Meeting Block 9` AS `meeting9`,
+        `b`.`BULLET_1` AS `bullet_1`,
+        `b`.`BULLET_2` AS `bullet_2`,
+        `b`.`BULLET_3` AS `bullet_3`,
+        `b`.`BULLET_4` AS `bullet_4`,
+        `b`.`BULLET_5` AS `bullet_5`,
+        '' AS `tfn`,
+        (CASE
+            WHEN (`g`.`Meeting Block 4` <> '') THEN `g`.`FullPageSpecs`
+            ELSE `g`.`JrPageSpecs`
+        END) AS `newspaper_specs`,
+        '' AS `creative_code`,
+        '' AS `provider`,
+        `g`.`Presentation_language` AS `Presentation_language`
+    FROM
+        (`Report_in_publication_GroupAfter` `g`
+        LEFT JOIN `publication_by_brand_county_state_vw` `b` ON (((`g`.`Lead_Brand` = `b`.`Lead_Brand`)
+            AND (`g`.`DominantCounty` = `b`.`Dominant_County`)
+            AND (`g`.`State` = `b`.`Dominant_State`))))
+    GROUP BY `g`.`grouprank`
